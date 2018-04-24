@@ -1,11 +1,11 @@
 language: node_js
-cache: yarn
 node_js:
-   -  stable
+  - stable
+cache: yarn
 script:
-   - yarn install
+  - yarn install
   - yarn test
   - yarn build
 after_success:
   - yarn global add firebase-tools
-   - firebase deploy --token "$FIREBASE_TOKEN"
+  - firebase deploy --token "$FIREBASE_TOKEN"
