@@ -3,10 +3,14 @@ import { firebase } from "../firebase"
 import * as firebaseui from "firebaseui"
 import { Redirect } from "react-router-dom"
 
-import { Consumer } from "../store"
+import { connect } from "../store"
 
 class Login extends Component {
   componentDidMount() {
+    if (this.props.authenticated) {
+      return
+    }
+
     firebase.authui.start("#firebase-auth-container", {
       callbacks: {
         signInSuccessWithAuthResult: function(authResult, redirectUrl) {
@@ -23,12 +27,12 @@ class Login extends Component {
   }
 
   render() {
+    if (this.props.authenticated) {
+      return <Redirect to="/" />
+    }
+
     return <div id="firebase-auth-container" />
   }
 }
 
-export default () => (
-  <Consumer mapStateToProps={state => state.authenticated}>
-    {authenticated => (authenticated ? <Redirect to="/" /> : <Login />)}
-  </Consumer>
-)
+export default connect(state => ({ authenticated: state.authenticated }))(Login)
