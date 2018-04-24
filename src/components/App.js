@@ -5,6 +5,7 @@ import {
   Route,
   Switch,
 } from "react-router-dom"
+import { firebase } from "../firebase"
 
 import Frame from "./Frame"
 import Login from "./Login"
@@ -12,6 +13,22 @@ import Logout from "./Logout"
 import { connect } from "../store"
 
 class App extends Component {
+  componentDidMount() {
+    let {
+      actions: { update },
+    } = this.props
+
+    let db = firebase.firestore()
+
+    this.unsubscribe = db.collection("users").onSnapshot(querySnapshot => {
+      update({ users: querySnapshot.docs.map(doc => doc.data()) })
+    })
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe()
+  }
+
   render() {
     let { authenticated } = this.props
 

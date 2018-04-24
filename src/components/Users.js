@@ -1,34 +1,8 @@
-import React, { Component } from "react"
-import { firebase } from "../firebase"
+import React from "react"
+import { connect } from "../store"
 
-export default class Users extends Component {
-  constructor() {
-    super()
+const Users = ({ users }) => (
+  <ul>{users.map((user, key) => <li key={key}>{JSON.stringify(user)}</li>)}</ul>
+)
 
-    this.state = {
-      users: [],
-    }
-  }
-
-  componentDidMount() {
-    let db = firebase.firestore()
-
-    this.unsubscribe = db.collection("users").onSnapshot(querySnapshot => {
-      this.setState({ users: querySnapshot.docs.map(doc => doc.data()) })
-    })
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe()
-  }
-
-  render() {
-    return (
-      <ul>
-        {this.state.users.map((user, key) => (
-          <li key={key}>{JSON.stringify(user)}</li>
-        ))}
-      </ul>
-    )
-  }
-}
+export default connect(state => ({ users: state.users }))(Users)
