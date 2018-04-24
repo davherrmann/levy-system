@@ -13,38 +13,26 @@ import Logout from "./Logout"
 import { connect } from "../store"
 
 class App extends Component {
-  unsubscribe = []
-
   componentDidMount() {
     let {
       actions: { login, logout, update },
     } = this.props
 
-    let unsubscribe = this.unsubscribe
-
     // DB realtime updates
     let db = firebase.firestore()
 
-    unsubscribe.push(
-      db.collection("users").onSnapshot(querySnapshot => {
-        update({ users: querySnapshot.docs.map(doc => doc.data()) })
-      })
-    )
+    db.collection("users").onSnapshot(querySnapshot => {
+      update({ users: querySnapshot.docs.map(doc => doc.data()) })
+    })
 
     // Auth updates
-    unsubscribe.push(
-      firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-          login()
-        } else {
-          logout()
-        }
-      })
-    )
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        login()
+      } else {
+        logout()
+      }
+    })
   }
 
   render() {
