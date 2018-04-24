@@ -1,11 +1,13 @@
 import React, { Component } from "react"
 import { firebase } from "../firebase"
 import * as firebaseui from "firebaseui"
+import { Redirect } from "react-router-dom"
 
-export default class Login extends Component {
+import AuthUserContext from "./AuthUserContext"
+
+class Login extends Component {
   componentDidMount() {
-    let ui = new firebaseui.auth.AuthUI(firebase.auth())
-    ui.start("#firebase-auth-container", {
+    firebase.authui.start("#firebase-auth-container", {
       callbacks: {
         signInSuccessWithAuthResult: function(authResult, redirectUrl) {
           // User successfully signed in.
@@ -16,7 +18,7 @@ export default class Login extends Component {
       },
       credentialHelper: firebaseui.auth.CredentialHelper.NONE,
       signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
-      signInSuccessUrl: "/loggedIn",
+      signInSuccessUrl: "/",
     })
   }
 
@@ -24,3 +26,9 @@ export default class Login extends Component {
     return <div id="firebase-auth-container" />
   }
 }
+
+export default () => (
+  <AuthUserContext.Consumer>
+    {authUser => (authUser ? <Redirect to="/" /> : <Login />)}
+  </AuthUserContext.Consumer>
+)

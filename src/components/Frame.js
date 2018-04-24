@@ -1,10 +1,17 @@
 import React from "react"
-import { Link } from "react-router-dom"
+import { Link, Redirect } from "react-router-dom"
+import AuthUserContext from "./AuthUserContext"
 
-export default () => (
+const Frame = () => (
   <header>
     <nav>
-      <Link to="Logout">Logout</Link>
+      <Link to="/login">Logout</Link>
     </nav>
   </header>
+)
+
+export default () => (
+  <AuthUserContext.Consumer>
+    {authUser => (authUser ? <Frame /> : <Redirect to="/login" />)}
+  </AuthUserContext.Consumer>
 )

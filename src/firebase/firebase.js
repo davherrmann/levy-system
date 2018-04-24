@@ -1,4 +1,5 @@
 import * as firebase from "firebase"
+import * as firebaseui from "firebaseui"
 
 var config = {
   apiKey: "AIzaSyCqN3e3Xmi_sc7thEa3eIvDLnm0Ov9vlDA",
@@ -14,5 +15,6 @@ if (!firebase.apps.length) {
 }
 
 let auth = firebase.auth
+let authui = new firebaseui.auth.AuthUI(auth())
 
-export { auth }
+export { auth, authui }
