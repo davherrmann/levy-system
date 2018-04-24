@@ -5,7 +5,7 @@ import AuthUserContext from "./AuthUserContext"
 const Frame = () => (
   <header>
     <nav>
-      <Link to="/login">Logout</Link>
+      <Link to="/logout">Logout</Link>
     </nav>
   </header>
 )
