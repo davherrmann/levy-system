@@ -8,4 +8,4 @@ script:
   - yarn build
 after_success:
   - yarn global add firebase-tools
-   - firebase deploy -project levy-system - token $FIREBASE_TOKEN
+   - firebase deploy --token "$FIREBASE_TOKEN"
