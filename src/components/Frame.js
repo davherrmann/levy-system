@@ -1,18 +1,13 @@
 import React from "react"
-import { Link, Route, Switch } from "react-router-dom"
+import { Route, Switch } from "react-router-dom"
 
+import NavBar from "./NavBar"
 import Transactions from "./Transactions"
 import Users from "./Users"
 
 export default () => (
   <React.Fragment>
-    <header>
-      <nav>
-        <Link to="/logout">Logout</Link>
-        <Link to="/users">Users</Link>
-        <Link to="/transactions">Transactions</Link>
-      </nav>
-    </header>
+    <NavBar />
     <main>
       <Switch>
         <Route exact path="/users" component={Users} />

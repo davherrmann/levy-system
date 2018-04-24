@@ -4,7 +4,7 @@ const store = {
   initialState: {
     authenticated: true,
     count: 0,
-    users: [{ asdf: "asdfefef" }, { age: 9 }],
+    users: [],
   },
   actions: {
     increment: ({ count }) => ({ count: count + 1 }),

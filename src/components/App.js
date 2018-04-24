@@ -19,11 +19,15 @@ class App extends Component {
     } = this.props
 
     // DB realtime updates
-    let db = firebase.firestore()
-
-    db.collection("users").onSnapshot(querySnapshot => {
-      update({ users: querySnapshot.docs.map(doc => doc.data()) })
-    })
+    firebase
+      .firestore()
+      .collection("users")
+      .onSnapshot(
+        querySnapshot => {
+          update({ users: querySnapshot.docs.map(doc => doc.data()) })
+        },
+        () => {}
+      )
 
     // Auth updates
     firebase.auth().onAuthStateChanged(user => {
