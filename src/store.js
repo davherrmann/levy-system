@@ -8,6 +8,8 @@ const store = {
   },
   actions: {
     increment: ({ count }) => ({ count: count + 1 }),
+    login: () => ({ authenticated: true }),
+    logout: () => ({ authenticated: false }),
     update: (_, e) => e,
   },
 }

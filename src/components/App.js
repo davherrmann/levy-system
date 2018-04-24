@@ -15,13 +15,23 @@ import { connect } from "../store"
 class App extends Component {
   componentDidMount() {
     let {
-      actions: { update },
+      actions: { login, logout, update },
     } = this.props
 
+    // DB realtime updates
     let db = firebase.firestore()
 
     this.unsubscribe = db.collection("users").onSnapshot(querySnapshot => {
       update({ users: querySnapshot.docs.map(doc => doc.data()) })
+    })
+
+    // Auth updates
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        login()
+      } else {
+        logout()
+      }
     })
   }
 
