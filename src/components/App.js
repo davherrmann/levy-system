@@ -16,7 +16,7 @@ class App extends Component {
           <Route path="/login" component={Login} />
           <Route path="/logout" component={Logout} />
           <AuthUserContext.Consumer>
-            {authUser => (authUser ? "logged in" : "logged out")}
+            {authenticated => (authenticated ? "logged in" : "logged out")}
           </AuthUserContext.Consumer>
         </div>
       </Router>

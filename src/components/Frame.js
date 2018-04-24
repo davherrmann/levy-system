@@ -12,6 +12,6 @@ const Frame = () => (
 
 export default () => (
   <AuthUserContext.Consumer>
-    {authUser => (authUser ? <Frame /> : <Redirect to="/login" />)}
+    {authenticated => (authenticated ? <Frame /> : <Redirect to="/login" />)}
   </AuthUserContext.Consumer>
 )

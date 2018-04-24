@@ -8,23 +8,23 @@ export default function withAuthentication(Component) {
       super(props)
 
       this.state = {
-        authUser: firebase.auth().currentUser,
+        authenticated: true,
       }
     }
 
     componentDidMount() {
       firebase.auth().onAuthStateChanged(authUser => {
         authUser
-          ? this.setState(() => ({ authUser }))
-          : this.setState(() => ({ authUser: null }))
+          ? this.setState({ authenticated: true })
+          : this.setState({ authenticated: false })
       })
     }
 
     render() {
-      const { authUser } = this.state
+      const { authenticated } = this.state
 
       return (
-        <AuthUserContext.Provider value={authUser}>
+        <AuthUserContext.Provider value={authenticated}>
           <Component />
         </AuthUserContext.Provider>
       )

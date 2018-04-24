@@ -29,6 +29,6 @@ class Login extends Component {
 
 export default () => (
   <AuthUserContext.Consumer>
-    {authUser => (authUser ? <Redirect to="/" /> : <Login />)}
+    {authenticated => (authenticated ? <Redirect to="/" /> : <Login />)}
   </AuthUserContext.Consumer>
 )
