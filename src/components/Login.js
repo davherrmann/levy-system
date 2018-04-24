@@ -3,7 +3,7 @@ import { firebase } from "../firebase"
 import * as firebaseui from "firebaseui"
 import { Redirect } from "react-router-dom"
 
-import AuthUserContext from "./AuthUserContext"
+import { Consumer } from "../store"
 
 class Login extends Component {
   componentDidMount() {
@@ -28,7 +28,7 @@ class Login extends Component {
 }
 
 export default () => (
-  <AuthUserContext.Consumer>
+  <Consumer mapStateToProps={state => state.authenticated}>
     {authenticated => (authenticated ? <Redirect to="/" /> : <Login />)}
-  </AuthUserContext.Consumer>
+  </Consumer>
 )

@@ -1,17 +1,23 @@
 import React from "react"
-import { Link, Redirect } from "react-router-dom"
-import AuthUserContext from "./AuthUserContext"
+import { Link, Route, Switch } from "react-router-dom"
 
-const Frame = () => (
-  <header>
-    <nav>
-      <Link to="/logout">Logout</Link>
-    </nav>
-  </header>
-)
+import Transactions from "./Transactions"
+import Users from "./Users"
 
 export default () => (
-  <AuthUserContext.Consumer>
-    {authenticated => (authenticated ? <Frame /> : <Redirect to="/login" />)}
-  </AuthUserContext.Consumer>
+  <React.Fragment>
+    <header>
+      <nav>
+        <Link to="/logout">Logout</Link>
+        <Link to="/users">Users</Link>
+        <Link to="/transactions">Transactions</Link>
+      </nav>
+    </header>
+    <main>
+      <Switch>
+        <Route exact path="/users" component={Users} />
+        <Route exact path="/transactions" component={Transactions} />
+      </Switch>
+    </main>
+  </React.Fragment>
 )

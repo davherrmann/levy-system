@@ -1,27 +1,35 @@
 import React, { Component } from "react"
-import { BrowserRouter as Router, Route } from "react-router-dom"
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from "react-router-dom"
 
-import AuthUserContext from "./AuthUserContext"
 import Frame from "./Frame"
 import Login from "./Login"
 import Logout from "./Logout"
-import withAuthentication from "./withAuthentication"
+import { connect } from "../store"
 
 class App extends Component {
   render() {
+    let { authenticated } = this.props
+
     return (
       <Router>
-        <div>
-          <Route exact path="/" component={Frame} />
+        <Switch>
           <Route path="/login" component={Login} />
           <Route path="/logout" component={Logout} />
-          <AuthUserContext.Consumer>
-            {authenticated => (authenticated ? "logged in" : "logged out")}
-          </AuthUserContext.Consumer>
-        </div>
+          <Route
+            path="/"
+            render={() =>
+              authenticated ? <Frame /> : <Redirect to="/login" />
+            }
+          />
+        </Switch>
       </Router>
     )
   }
 }
 
-export default withAuthentication(App)
+export default connect(state => ({ authenticated: state.authenticated }))(App)

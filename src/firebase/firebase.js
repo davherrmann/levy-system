@@ -1,5 +1,6 @@
 import * as firebase from "firebase"
 import * as firebaseui from "firebaseui"
+require("firebase/firestore")
 
 var config = {
   apiKey: "AIzaSyCqN3e3Xmi_sc7thEa3eIvDLnm0Ov9vlDA",
@@ -16,5 +17,7 @@ if (!firebase.apps.length) {
 
 let auth = firebase.auth
 let authui = new firebaseui.auth.AuthUI(auth())
+let firestore = firebase.firestore
+firestore().settings({ timestampsInSnapshots: true })
 
-export { auth, authui }
+export { auth, authui, firestore }
