@@ -6,23 +6,6 @@ admin.initializeApp({
 })
 firebase.initializeApp(functions.config().config)
 
-exports.login = functions.https.onRequest((req, res) => {
-  return admin
-    .auth()
-    .createCustomToken("wDxQjA2XSs7cUO2uzslS", {
-      email: "davherrmann@googlemail.com",
-      verified: true,
-      office: "UK",
-    })
-    .then(function(customToken) {
-      res.status(200).send(customToken)
-    })
-    .catch(function(error) {
-      console.log("Error creating custom token:", error)
-      res.status(400).send("token could not be created")
-    })
-})
-
 exports.createUser = functions.firestore
   .document("users/{userId}")
   .onCreate((snap, context) => {
