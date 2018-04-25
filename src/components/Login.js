@@ -21,7 +21,13 @@ class Login extends Component {
         },
       },
       credentialHelper: firebaseui.auth.CredentialHelper.NONE,
-      signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
+      signInFlow: "popup",
+      signInOptions: [
+        {
+          provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+          requireDisplayName: false,
+        },
+      ],
       signInSuccessUrl: "/",
     })
   }

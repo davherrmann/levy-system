@@ -2,7 +2,7 @@ import * as firebase from "firebase"
 import * as firebaseui from "firebaseui"
 require("firebase/firestore")
 
-var config = {
+let config = {
   apiKey: "AIzaSyCqN3e3Xmi_sc7thEa3eIvDLnm0Ov9vlDA",
   authDomain: "levy-system.firebaseapp.com",
   databaseURL: "https://levy-system.firebaseio.com",
