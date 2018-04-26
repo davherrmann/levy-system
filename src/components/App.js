@@ -3,7 +3,6 @@ import { Redirect, Route, Switch, withRouter } from "react-router-dom"
 import { firebase } from "../firebase"
 
 import Login from "./Login"
-import Logout from "./Logout"
 import NavBar from "./NavBar"
 import Transactions from "./Transactions"
 import Users from "./Users"
@@ -21,45 +20,61 @@ class App extends Component {
   }
 
   componentDidMount() {
+    let subs = []
+
     // DB realtime updates
-    firebase
-      .firestore()
-      .collection("users")
-      .onSnapshot(
-        querySnapshot => {
-          this.setState({ users: querySnapshot.docs.map(doc => doc.data()) })
-        },
-        err => console.log("users:", err)
-      )
+    subs.push(
+      firebase
+        .firestore()
+        .collection("users")
+        .onSnapshot(
+          querySnapshot => {
+            this.setState({ users: querySnapshot.docs.map(doc => doc.data()) })
+          },
+          err => console.log("users:", err)
+        )
+    )
 
-    firebase
-      .firestore()
-      .collection("transactions")
-      .onSnapshot(
-        querySnapshot => {
-          this.setState({
-            transactions: querySnapshot.docs.map(doc => doc.data()),
-          })
-        },
-        err => console.log("transactions:", err)
-      )
+    subs.push(
+      firebase
+        .firestore()
+        .collection("transactions")
+        .onSnapshot(
+          querySnapshot => {
+            this.setState({
+              transactions: querySnapshot.docs.map(doc => doc.data()),
+            })
+          },
+          err => console.log("transactions:", err)
+        )
+    )
 
-    firebase
-      .firestore()
-      .collection("offices")
-      .onSnapshot(
-        querySnapshot => {
-          this.setState({
-            offices: querySnapshot.docs.map(doc => doc.data()),
-          })
-        },
-        err => console.log("offices:", err)
-      )
+    subs.push(
+      firebase
+        .firestore()
+        .collection("offices")
+        .onSnapshot(
+          querySnapshot => {
+            this.setState({
+              offices: querySnapshot.docs.map(doc => doc.data()),
+            })
+          },
+          err => console.log("offices:", err)
+        )
+    )
 
     // Auth updates
-    firebase.auth().onAuthStateChanged(user => {
-      this.setState({ authenticated: !!user })
-    })
+    subs.push(
+      firebase.auth().onAuthStateChanged(user => {
+        this.setState({ authenticated: !!user })
+      })
+    )
+
+    this.subs = subs
+  }
+
+  componentWillUnmount() {
+    this.subs.forEach(cancelSubscription => cancelSubscription())
   }
 
   render() {
@@ -73,7 +88,6 @@ class App extends Component {
       <div style={{ margin: "0 auto", maxWidth: "60rem", padding: "1em" }}>
         <NavBar users={users} />
         <Switch>
-          <Route path="/logout" component={Logout} />
           <Route
             exact
             path="/users"
