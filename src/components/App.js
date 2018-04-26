@@ -13,6 +13,7 @@ class App extends Component {
 
     this.state = {
       authenticated: true,
+      categories: [],
       offices: [],
       transactions: [],
       users: [],
@@ -63,6 +64,20 @@ class App extends Component {
         )
     )
 
+    subs.push(
+      firebase
+        .firestore()
+        .collection("categories")
+        .onSnapshot(
+          querySnapshot => {
+            this.setState({
+              categories: querySnapshot.docs.map(doc => doc.data()),
+            })
+          },
+          err => console.log("categories:", err)
+        )
+    )
+
     // Auth updates
     subs.push(
       firebase.auth().onAuthStateChanged(user => {
@@ -78,7 +93,7 @@ class App extends Component {
   }
 
   render() {
-    let { authenticated, offices, transactions, users } = this.state
+    let { authenticated, categories, offices, transactions, users } = this.state
 
     if (!authenticated) {
       return <Login authenticated={authenticated} />
@@ -97,7 +112,11 @@ class App extends Component {
             exact
             path="/transactions"
             render={() => (
-              <Transactions offices={offices} transactions={transactions} />
+              <Transactions
+                categories={categories}
+                offices={offices}
+                transactions={transactions}
+              />
             )}
           />
           <Redirect from="/" to="/transactions" />

@@ -9,7 +9,7 @@ const DATE_SHORT = {
   day: "numeric",
 }
 
-export default ({ offices = [], transactions = [] }) => (
+export default ({ categories = [], offices = [], transactions = [] }) => (
   <Table compact>
     <Table.Header>
       <Table.Row>
@@ -48,6 +48,7 @@ export default ({ offices = [], transactions = [] }) => (
         <Table.HeaderCell />
         <Table.HeaderCell colSpan="6">
           <AddTransactionModal
+            categories={categories}
             offices={offices}
             onSubmit={this.handleAddTransaction}
           />

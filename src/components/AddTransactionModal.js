@@ -2,12 +2,6 @@
 import React, { Component } from "react"
 import { Button, Form, Icon, Input, Modal, Select } from "semantic-ui-react"
 
-const categoryOptions = [
-  { key: "a", text: "Category A", value: "a" },
-  { key: "b", text: "Category B", value: "b" },
-  { key: "c", text: "Category C", value: "c" },
-]
-
 class AddTransactionModal extends Component {
   constructor(props) {
     super(props)
@@ -76,7 +70,7 @@ class AddTransactionModal extends Component {
               control={Select}
               label="Office"
               options={this.props.offices.map(({ name }, key) => ({
-                key: key,
+                key,
                 value: name,
                 text: name,
               }))}
@@ -93,7 +87,11 @@ class AddTransactionModal extends Component {
               name="category"
               control={Select}
               label="Category"
-              options={categoryOptions}
+              options={this.props.categories.map(({ name }, key) => ({
+                key,
+                value: name,
+                text: name,
+              }))}
               onChange={this.handleChange}
             />
             <Form.Field
