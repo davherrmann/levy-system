@@ -1,8 +1,59 @@
 import React from "react"
+import { Checkbox, Table } from "semantic-ui-react"
+
 import { connect } from "../store"
+import AddUserModal from "./AddUserModal"
 
 const Users = ({ users }) => (
-  <ul>{users.map((user, key) => <li key={key}>{JSON.stringify(user)}</li>)}</ul>
+  <Table compact {...this.props}>
+    <Table.Header>
+      <Table.Row>
+        <Table.HeaderCell>Username</Table.HeaderCell>
+        <Table.HeaderCell>Name</Table.HeaderCell>
+        <Table.HeaderCell>Office</Table.HeaderCell>
+        <Table.HeaderCell>Admin</Table.HeaderCell>
+        <Table.HeaderCell>Initial Password</Table.HeaderCell>
+        <Table.HeaderCell>Enabled</Table.HeaderCell>
+      </Table.Row>
+    </Table.Header>
+
+    <Table.Body>
+      {users.map(u => (
+        <Table.Row key={u.id}>
+          <Table.Cell disabled={u.disabled}>{u.id}</Table.Cell>
+          <Table.Cell disabled={u.disabled}>
+            {u.firstname + " " + u.lastname}
+          </Table.Cell>
+          <Table.Cell disabled={u.disabled}>{u.officeid}</Table.Cell>
+          <Table.Cell collapsing disabled={u.disabled}>
+            {u.admin ? "Yes" : "No"}
+          </Table.Cell>
+          <Table.Cell collapsing disabled={u.disabled}>
+            {u.initialpassword}
+          </Table.Cell>
+          <Table.Cell collapsing textAlign="center">
+            {"this.state.username" !== u.id && (
+              <Checkbox
+                checked={!u.disabled}
+                name={u.id}
+                onClick={this.handleSetDisabled}
+                style={{ verticalAlign: "text-top" }}
+              />
+            )}
+          </Table.Cell>
+        </Table.Row>
+      ))}
+    </Table.Body>
+
+    <Table.Footer fullWidth>
+      <Table.Row>
+        <Table.HeaderCell />
+        <Table.HeaderCell colSpan="5">
+          <AddUserModal onSubmit={this.handleAddUser} />
+        </Table.HeaderCell>
+      </Table.Row>
+    </Table.Footer>
+  </Table>
 )
 
 export default connect(state => ({ users: state.users }))(Users)
