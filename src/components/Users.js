@@ -2,7 +2,6 @@ import React from "react"
 import { Checkbox, Table } from "semantic-ui-react"
 import { firebase } from "../firebase"
 
-import { connect } from "../store"
 import AddUserModal from "./AddUserModal"
 
 const Users = ({ users }) => (
@@ -51,4 +50,4 @@ const Users = ({ users }) => (
   </Table>
 )
 
-export default connect(state => ({ users: state.users }))(Users)
+export default Users

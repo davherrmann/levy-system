@@ -1,15 +1,15 @@
 import React from "react"
-import { Link } from "react-router-dom"
-import { connect } from "../store"
+import { Menu } from "semantic-ui-react"
+import { NavLink } from "react-router-dom"
 
-const NavBar = ({ users }) => (
-  <header>
-    <nav>
-      <Link to="/logout">Logout</Link>
-      {users.length > 0 && <Link to="/users">Users</Link>}
-      <Link to="/transactions">Transactions</Link>
-    </nav>
-  </header>
+const NavBar = ({ users = [] }) => (
+  <Menu pointing secondary inverted>
+    <Menu.Item as={NavLink} to="/transactions" name="transactions" />
+    {users.length > 0 && <Menu.Item as={NavLink} to="/users" name="users" />}
+    <Menu.Menu position="right">
+      <Menu.Item as={NavLink} to="/logout" name="logout" />
+    </Menu.Menu>
+  </Menu>
 )
 
-export default connect(state => ({ users: state.users }))(NavBar)
+export default NavBar
