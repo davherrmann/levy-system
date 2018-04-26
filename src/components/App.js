@@ -14,6 +14,7 @@ class App extends Component {
 
     this.state = {
       authenticated: true,
+      offices: [],
       transactions: [],
       users: [],
     }
@@ -28,7 +29,7 @@ class App extends Component {
         querySnapshot => {
           this.setState({ users: querySnapshot.docs.map(doc => doc.data()) })
         },
-        err => console.log(err)
+        err => console.log("users:", err)
       )
 
     firebase
@@ -40,7 +41,19 @@ class App extends Component {
             transactions: querySnapshot.docs.map(doc => doc.data()),
           })
         },
-        err => console.log(err)
+        err => console.log("transactions:", err)
+      )
+
+    firebase
+      .firestore()
+      .collection("offices")
+      .onSnapshot(
+        querySnapshot => {
+          this.setState({
+            offices: querySnapshot.docs.map(doc => doc.data()),
+          })
+        },
+        err => console.log("offices:", err)
       )
 
     // Auth updates
@@ -50,7 +63,7 @@ class App extends Component {
   }
 
   render() {
-    let { authenticated, transactions, users } = this.state
+    let { authenticated, offices, transactions, users } = this.state
 
     if (!authenticated) {
       return <Login authenticated={authenticated} />
@@ -61,11 +74,17 @@ class App extends Component {
         <NavBar users={users} />
         <Switch>
           <Route path="/logout" component={Logout} />
-          <Route exact path="/users" render={() => <Users users={users} />} />
+          <Route
+            exact
+            path="/users"
+            render={() => <Users offices={offices} users={users} />}
+          />
           <Route
             exact
             path="/transactions"
-            render={() => <Transactions transactions={transactions} />}
+            render={() => (
+              <Transactions offices={offices} transactions={transactions} />
+            )}
           />
           <Redirect from="/" to="/transactions" />
         </Switch>

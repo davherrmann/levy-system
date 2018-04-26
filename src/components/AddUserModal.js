@@ -22,20 +22,11 @@ class AddUserModal extends Component {
 
     this.state = {
       modalOpen: false,
-      officeOptions: [],
     }
   }
 
   handleOpen() {
     this.setState({ modalOpen: true })
-    const offices = JSON.parse(localStorage.getItem("offices"))
-    this.setState({
-      officeOptions: offices.map(office => ({
-        key: office.id,
-        value: office.id + ":" + office.currency,
-        text: office.id,
-      })),
-    })
   }
 
   handleClose() {
@@ -114,7 +105,11 @@ class AddUserModal extends Component {
               control={Select}
               name="office"
               label="Office"
-              options={this.state.officeOptions}
+              options={this.props.offices.map(({ name }, key) => ({
+                key,
+                value: name,
+                text: name,
+              }))}
               {...h}
             />
             <Segment color="red">

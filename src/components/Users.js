@@ -4,7 +4,7 @@ import { firebase } from "../firebase"
 
 import AddUserModal from "./AddUserModal"
 
-const Users = ({ users }) => (
+const Users = ({ offices, users }) => (
   <Table compact {...this.props}>
     <Table.Header>
       <Table.Row>
@@ -17,8 +17,8 @@ const Users = ({ users }) => (
     </Table.Header>
 
     <Table.Body>
-      {users.map(u => (
-        <Table.Row key={u.id}>
+      {users.map((u, key) => (
+        <Table.Row key={key}>
           <Table.Cell disabled={u.disabled}>{u.email}</Table.Cell>
           <Table.Cell disabled={u.disabled}>{u.name}</Table.Cell>
           <Table.Cell disabled={u.disabled}>{u.officeid}</Table.Cell>
@@ -43,7 +43,7 @@ const Users = ({ users }) => (
       <Table.Row>
         <Table.HeaderCell />
         <Table.HeaderCell colSpan="5">
-          <AddUserModal onSubmit={this.handleAddUser} />
+          <AddUserModal offices={offices} onSubmit={this.handleAddUser} />
         </Table.HeaderCell>
       </Table.Row>
     </Table.Footer>

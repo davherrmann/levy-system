@@ -19,20 +19,11 @@ class AddTransactionModal extends Component {
 
     this.state = {
       modalOpen: false,
-      officeOptions: [],
     }
   }
 
   handleOpen() {
     this.setState({ modalOpen: true })
-    const offices = JSON.parse(localStorage.getItem("offices"))
-    this.setState({
-      officeOptions: offices.map(office => ({
-        key: office.id,
-        value: office.id,
-        text: office.id,
-      })),
-    })
   }
 
   handleClose() {
@@ -84,7 +75,11 @@ class AddTransactionModal extends Component {
               name="office"
               control={Select}
               label="Office"
-              options={this.state.officeOptions}
+              options={this.props.offices.map(({ name }, key) => ({
+                key: key,
+                value: name,
+                text: name,
+              }))}
               onChange={this.handleChange}
             />
             <Form.Field
