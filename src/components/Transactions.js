@@ -30,10 +30,12 @@ export default ({ transactions = [] }) => (
           <Table.Cell collapsing>{t.sourceofficeid}</Table.Cell>
           <Table.Cell collapsing>{t.targetofficeid}</Table.Cell>
           <Table.Cell collapsing>
-            {DateTime.fromISO(t.date).toLocaleString(DATE_SHORT)}
+            {DateTime.fromMillis(t.createdAt.seconds * 1000).toLocaleString(
+              DATE_SHORT
+            )}
           </Table.Cell>
           <Table.Cell collapsing textAlign="right">
-            {t.amount + " " + t.currency}
+            {(t.amountInCents / 100).toFixed(2) + " " + t.currency}
           </Table.Cell>
           <Table.Cell collapsing>{t.category}</Table.Cell>
           <Table.Cell>{t.comment}</Table.Cell>
