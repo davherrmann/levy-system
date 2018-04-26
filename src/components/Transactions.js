@@ -26,9 +26,9 @@ export default ({ transactions = [] }) => (
 
     <Table.Body>
       {transactions.map((t, key) => (
-        <Table.Row key={t.key}>
-          <Table.Cell collapsing>{t.sourceofficeid}</Table.Cell>
-          <Table.Cell collapsing>{t.targetofficeid}</Table.Cell>
+        <Table.Row key={key}>
+          <Table.Cell collapsing>{t.sourceOffice}</Table.Cell>
+          <Table.Cell collapsing>{t.targetOffice}</Table.Cell>
           <Table.Cell collapsing>
             {DateTime.fromMillis(t.createdAt.seconds * 1000).toLocaleString(
               DATE_SHORT
