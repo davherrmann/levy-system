@@ -1,5 +1,6 @@
 import React from "react"
 import { Checkbox, Table } from "semantic-ui-react"
+import { firebase } from "../firebase"
 
 import { connect } from "../store"
 import AddUserModal from "./AddUserModal"
@@ -8,11 +9,10 @@ const Users = ({ users }) => (
   <Table compact {...this.props}>
     <Table.Header>
       <Table.Row>
-        <Table.HeaderCell>Username</Table.HeaderCell>
+        <Table.HeaderCell>Email</Table.HeaderCell>
         <Table.HeaderCell>Name</Table.HeaderCell>
         <Table.HeaderCell>Office</Table.HeaderCell>
         <Table.HeaderCell>Admin</Table.HeaderCell>
-        <Table.HeaderCell>Initial Password</Table.HeaderCell>
         <Table.HeaderCell>Enabled</Table.HeaderCell>
       </Table.Row>
     </Table.Header>
@@ -20,19 +20,14 @@ const Users = ({ users }) => (
     <Table.Body>
       {users.map(u => (
         <Table.Row key={u.id}>
-          <Table.Cell disabled={u.disabled}>{u.id}</Table.Cell>
-          <Table.Cell disabled={u.disabled}>
-            {u.firstname + " " + u.lastname}
-          </Table.Cell>
+          <Table.Cell disabled={u.disabled}>{u.email}</Table.Cell>
+          <Table.Cell disabled={u.disabled}>{u.name}</Table.Cell>
           <Table.Cell disabled={u.disabled}>{u.officeid}</Table.Cell>
           <Table.Cell collapsing disabled={u.disabled}>
             {u.admin ? "Yes" : "No"}
           </Table.Cell>
-          <Table.Cell collapsing disabled={u.disabled}>
-            {u.initialpassword}
-          </Table.Cell>
           <Table.Cell collapsing textAlign="center">
-            {"this.state.username" !== u.id && (
+            {firebase.auth().currentUser.email !== u.email && (
               <Checkbox
                 checked={!u.disabled}
                 name={u.id}
