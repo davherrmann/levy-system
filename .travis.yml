@@ -7,8 +7,6 @@ script:
   - yarn install
   - yarn test
   - yarn build
-deploy:
-  provider: script
-  script:
-    - yarn global add firebase-tools
-    - firebase deploy --token "$FIREBASE_TOKEN"
+after_success:
+  - yarn global add firebase-tools
+  - firebase deploy --token "$FIREBASE_TOKEN"
