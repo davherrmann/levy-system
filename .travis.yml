@@ -3,9 +3,12 @@ node_js:
   - 9
 cache: yarn
 script:
+  - (cd functions && yarn install)
   - yarn install
   - yarn test
   - yarn build
-after_success:
-  - yarn global add firebase-tools
-  - firebase deploy --token "$FIREBASE_TOKEN"
+deploy:
+  provider: script
+  script:
+    - yarn global add firebase-tools
+    - firebase deploy --token "$FIREBASE_TOKEN"
