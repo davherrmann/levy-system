@@ -33,8 +33,8 @@ class AddTransactionModal extends Component {
   handleSubmit() {
     this.handleClose()
     this.props.onSubmit({
-      targetofficeid: this.state.office,
-      amount: parseInt(this.state.amount, 10),
+      targetOffice: this.state.office,
+      amountInCents: parseInt(this.state.amount, 10),
       category: this.state.category,
       comment: this.state.comment,
     })

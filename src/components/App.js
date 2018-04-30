@@ -92,6 +92,15 @@ class App extends Component {
     this.subs.forEach(cancelSubscription => cancelSubscription())
   }
 
+  addTransaction(transaction) {
+    firebase
+      .firestore()
+      .collection("transactions")
+      .add(transaction)
+      .then(doc => console.log(doc))
+      .catch(err => console.log(err))
+  }
+
   render() {
     let { authenticated, categories, offices, transactions, users } = this.state
 
@@ -113,6 +122,7 @@ class App extends Component {
             path="/transactions"
             render={() => (
               <Transactions
+                addTransaction={this.addTransaction}
                 categories={categories}
                 offices={offices}
                 transactions={transactions}

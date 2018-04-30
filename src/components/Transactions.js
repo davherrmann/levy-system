@@ -9,7 +9,12 @@ const DATE_SHORT = {
   day: "numeric",
 }
 
-export default ({ categories = [], offices = [], transactions = [] }) => (
+export default ({
+  addTransaction,
+  categories = [],
+  offices = [],
+  transactions = [],
+}) => (
   <Table compact>
     <Table.Header>
       <Table.Row>
@@ -30,9 +35,10 @@ export default ({ categories = [], offices = [], transactions = [] }) => (
           <Table.Cell collapsing>{t.sourceOffice}</Table.Cell>
           <Table.Cell collapsing>{t.targetOffice}</Table.Cell>
           <Table.Cell collapsing>
-            {DateTime.fromMillis(t.createdAt.seconds * 1000).toLocaleString(
-              DATE_SHORT
-            )}
+            {t.createdAt &&
+              DateTime.fromMillis(t.createdAt.seconds * 1000).toLocaleString(
+                DATE_SHORT
+              )}
           </Table.Cell>
           <Table.Cell collapsing textAlign="right">
             {(t.amountInCents / 100).toFixed(2) + " " + t.currency}
@@ -50,7 +56,7 @@ export default ({ categories = [], offices = [], transactions = [] }) => (
           <AddTransactionModal
             categories={categories}
             offices={offices}
-            onSubmit={this.handleAddTransaction}
+            onSubmit={addTransaction}
           />
         </Table.HeaderCell>
       </Table.Row>
