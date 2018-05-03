@@ -48,6 +48,7 @@ const periodName = ({ year, period }) =>
   }[period])
 
 const Transactions = ({
+  admin,
   office,
   transactions = [],
   history,
@@ -140,7 +141,7 @@ const Transactions = ({
                 color: office === t.targetOffice ? "#42a746" : "black", // red: #e42e2e
               }}
             >
-              {office === t.targetOffice ? "" : "−"}
+              {office === t.targetOffice || admin ? "" : "−"}
               {(t.amountInCents / 100).toFixed(2) + " " + t.currency}
             </Table.Cell>
             <Table.Cell collapsing>{t.category}</Table.Cell>

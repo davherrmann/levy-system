@@ -133,6 +133,7 @@ class App extends Component {
                   loadTransactions={period => this.setState({ period })}
                 >
                   <Transactions
+                    admin={claims.admin}
                     transactions={transactions}
                     office={claims.office}
                   />
