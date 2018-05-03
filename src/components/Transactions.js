@@ -140,7 +140,7 @@ const Transactions = ({
                 color: office === t.targetOffice ? "#42a746" : "black", // red: #e42e2e
               }}
             >
-              {office === t.sourceOffice ? "−" : ""}
+              {office === t.targetOffice ? "" : "−"}
               {(t.amountInCents / 100).toFixed(2) + " " + t.currency}
             </Table.Cell>
             <Table.Cell collapsing>{t.category}</Table.Cell>
