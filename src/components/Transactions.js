@@ -49,6 +49,7 @@ const periodName = ({ year, period }) =>
 
 const Transactions = ({
   admin,
+  name,
   office,
   transactions = [],
   history,
@@ -104,6 +105,9 @@ const Transactions = ({
               </Button>
             </Button.Group>
             <span style={{ marginLeft: "1em" }}>{periodName(current)}</span>
+            <span
+              style={{ fontWeight: "normal", marginLeft: "1em" }}
+            >{`${name} (${office})`}</span>
           </Table.HeaderCell>
         </Table.Row>
         <Table.Row>

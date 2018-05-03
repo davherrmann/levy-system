@@ -174,6 +174,7 @@ class App extends Component {
                 >
                   <Transactions
                     admin={claims.admin}
+                    name={claims.name}
                     transactions={transactions}
                     office={claims.office}
                   />
