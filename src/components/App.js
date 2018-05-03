@@ -43,6 +43,7 @@ class App extends Component {
       .firestore()
       .collection("transactions")
       .where("period", "==", this.period.year + "-" + this.period.period)
+      .orderBy("createdAt")
       .onSnapshot(
         querySnapshot => {
           this.setState({
