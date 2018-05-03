@@ -16,6 +16,18 @@ const combineTransactions = (sourceTransactions, targetTransactions) =>
       return a.seconds - b.seconds
     })
 
+function b64DecodeUnicode(str) {
+  // Going backwards: from bytestream, to percent-encoding, to original string.
+  return decodeURIComponent(
+    atob(str)
+      .split("")
+      .map(function(c) {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)
+      })
+      .join("")
+  )
+}
+
 class App extends Component {
   constructor() {
     super()
@@ -27,6 +39,7 @@ class App extends Component {
       authenticated: true,
       categories: [],
       offices: [],
+      claims: {},
       sourceTransactions: [],
       targetTransactions: [],
       users: [],
@@ -49,6 +62,9 @@ class App extends Component {
     }
     if (this.cancelTargetTransactions) {
       this.cancelTargetTransactions()
+    }
+    if (!this.period) {
+      return
     }
     this.cancelSourceTransactions = firebase
       .firestore()
@@ -130,6 +146,18 @@ class App extends Component {
     subs.push(
       firebase.auth().onAuthStateChanged(user => {
         this.setState({ authenticated: !!user })
+
+        if (user) {
+          user
+            .getIdToken()
+            .then(idToken => {
+              const claims = JSON.parse(b64DecodeUnicode(idToken.split(".")[1]))
+              this.setState({ claims })
+            })
+            .catch(error => {
+              console.log(error)
+            })
+        }
       })
     )
 
@@ -140,6 +168,9 @@ class App extends Component {
     this.subs.forEach(cancelSubscription => cancelSubscription())
     this.cancelSourceTransactions()
     this.cancelTargetTransactions()
+
+    this.cancelSourceTransactions = undefined
+    this.cancelTargetTransactions = undefined
   }
 
   addTransaction(transaction) {
@@ -147,7 +178,6 @@ class App extends Component {
       .firestore()
       .collection("transactions")
       .add(transaction)
-      .then(doc => console.log(doc))
       .catch(err => console.log(err))
   }
 
@@ -155,6 +185,7 @@ class App extends Component {
     let {
       authenticated,
       categories,
+      claims,
       offices,
       sourceTransactions,
       targetTransactions,
@@ -196,6 +227,8 @@ class App extends Component {
                       addTransaction={this.addTransaction}
                       categories={categories}
                       offices={offices}
+                      office={claims.office}
+                      currency={claims.currency}
                     />
                   )}
                 />

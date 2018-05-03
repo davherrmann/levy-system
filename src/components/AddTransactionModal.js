@@ -3,6 +3,16 @@ import React, { Component } from "react"
 import { withRouter } from "react-router-dom"
 import { Button, Form, Icon, Input, Modal, Select } from "semantic-ui-react"
 
+const defaultPeriod = (date = new Date()) => {
+  let month = date.getMonth()
+  let year = date.getFullYear()
+
+  return {
+    year: month === 0 ? year - 1 : year,
+    period: month === 0 ? 6 : Math.ceil(month / 2),
+  }
+}
+
 class AddTransactionModal extends Component {
   constructor(props) {
     super(props)
@@ -10,10 +20,6 @@ class AddTransactionModal extends Component {
     this.handleClose = this.handleClose.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
-  }
-
-  componentWillReceiveProps() {
-    console.log(this.props.location)
   }
 
   handleClose() {
@@ -28,11 +34,18 @@ class AddTransactionModal extends Component {
 
   handleSubmit() {
     this.handleClose()
-    this.props.onSubmit({
+
+    let period = defaultPeriod()
+
+    this.props.addTransaction({
+      sourceOffice: this.props.office,
       targetOffice: this.state.office,
       amountInCents: parseInt(this.state.amount, 10),
       category: this.state.category,
       comment: this.state.comment,
+      currency: this.props.currency,
+      createdAt: new Date(),
+      period: period.year + "-" + period.period,
     })
   }
 
