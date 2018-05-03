@@ -2,10 +2,12 @@ import React, { Component } from "react"
 import { Redirect, Route, Switch, withRouter } from "react-router-dom"
 import { firebase } from "../firebase"
 
+import AddOfficeModal from "./AddOfficeModal"
 import AddTransactionModal from "./AddTransactionModal"
 import AddUserModal from "./AddUserModal"
 import Login from "./Login"
 import NavBar from "./NavBar"
+import Offices from "./Offices"
 import Subscriptions from "./Subscriptions"
 import Transactions from "./Transactions"
 import TransactionsContainer from "./TransactionsContainer"
@@ -83,6 +85,14 @@ class App extends Component {
     this.subs.forEach(cancelSubscription => cancelSubscription())
   }
 
+  addOffice(office) {
+    firebase
+      .firestore()
+      .collection("offices")
+      .add(office)
+      .catch(err => console.log(err))
+  }
+
   addTransaction(transaction) {
     firebase
       .firestore()
@@ -127,7 +137,7 @@ class App extends Component {
           period={period}
           update={this.update}
         />
-        <NavBar users={users} />
+        <NavBar admin={claims.admin} />
         <Switch>
           <Route
             path="/users"
@@ -139,6 +149,18 @@ class App extends Component {
                   render={() => (
                     <AddUserModal offices={offices} onSubmit={this.addUser} />
                   )}
+                />
+              </React.Fragment>
+            )}
+          />
+          <Route
+            path="/offices"
+            render={() => (
+              <React.Fragment>
+                <Offices offices={offices} />
+                <Route
+                  path="/offices/add"
+                  render={() => <AddOfficeModal onSubmit={this.addOffice} />}
                 />
               </React.Fragment>
             )}
