@@ -5,6 +5,7 @@ import { firebase } from "../firebase"
 import AddTransactionModal from "./AddTransactionModal"
 import Login from "./Login"
 import NavBar from "./NavBar"
+import Subscriptions from "./Subscriptions"
 import Transactions from "./Transactions"
 import TransactionsContainer from "./TransactionsContainer"
 import Users from "./Users"
@@ -32,139 +33,28 @@ class App extends Component {
   constructor() {
     super()
 
-    this.loadTransactions = this.loadTransactions.bind(this)
-    this.subscribeToTransactions = this.subscribeToTransactions.bind(this)
-    this.unsubscribeFromTransactions = this.unsubscribeFromTransactions.bind(
-      this
-    )
+    this.update = this.update.bind(this)
 
     this.state = {
       authenticated: true,
       categories: [],
       offices: [],
       claims: {},
+      period: {},
       sourceTransactions: [],
       targetTransactions: [],
       users: [],
     }
   }
 
-  loadTransactions({ year, period }) {
-    this.period = { year, period }
-
-    if (!this.cancelSourceTransactions || !this.cancelTargetTransactions) {
-      return
-    }
-
-    this.subscribeToTransactions()
-  }
-
-  unsubscribeFromTransactions() {
-    if (this.cancelSourceTransactions) {
-      this.cancelSourceTransactions()
-    }
-    if (this.cancelTargetTransactions) {
-      this.cancelTargetTransactions()
-    }
-  }
-
-  subscribeToTransactions() {
-    this.unsubscribeFromTransactions()
-    if (!this.period) {
-      return
-    }
-
-    if (this.state.claims.admin) {
-      this.cancelSourceTransactions = firebase
-        .firestore()
-        .collection("transactions")
-        .where("period", "==", this.period.year + "-" + this.period.period)
-        .orderBy("createdAt")
-        .onSnapshot(
-          querySnapshot => {
-            this.setState({
-              sourceTransactions: querySnapshot.docs.map(doc => doc.data()),
-            })
-          },
-          err => console.log("source transactions:", err)
-        )
-      return
-    }
-
-    this.cancelSourceTransactions = firebase
-      .firestore()
-      .collection("transactions")
-      .where("period", "==", this.period.year + "-" + this.period.period)
-      .where("sourceOffice", "==", this.state.claims.office)
-      .orderBy("createdAt")
-      .onSnapshot(
-        querySnapshot => {
-          this.setState({
-            sourceTransactions: querySnapshot.docs.map(doc => doc.data()),
-          })
-        },
-        err => console.log("source transactions:", err)
-      )
-
-    this.cancelTargetTransactions = firebase
-      .firestore()
-      .collection("transactions")
-      .where("period", "==", this.period.year + "-" + this.period.period)
-      .where("targetOffice", "==", this.state.claims.office)
-      .orderBy("createdAt")
-      .onSnapshot(
-        querySnapshot => {
-          this.setState({
-            targetTransactions: querySnapshot.docs.map(doc => doc.data()),
-          })
-        },
-        err => console.log("target transactions:", err)
-      )
+  update(group) {
+    this.setState(group)
   }
 
   componentDidMount() {
     let subs = []
 
     // DB realtime updates
-    subs.push(
-      firebase
-        .firestore()
-        .collection("users")
-        .onSnapshot(
-          querySnapshot => {
-            this.setState({ users: querySnapshot.docs.map(doc => doc.data()) })
-          },
-          err => console.log("users:", err)
-        )
-    )
-
-    subs.push(
-      firebase
-        .firestore()
-        .collection("offices")
-        .onSnapshot(
-          querySnapshot => {
-            this.setState({
-              offices: querySnapshot.docs.map(doc => doc.data()),
-            })
-          },
-          err => console.log("offices:", err)
-        )
-    )
-
-    subs.push(
-      firebase
-        .firestore()
-        .collection("categories")
-        .onSnapshot(
-          querySnapshot => {
-            this.setState({
-              categories: querySnapshot.docs.map(doc => doc.data()),
-            })
-          },
-          err => console.log("categories:", err)
-        )
-    )
 
     // Auth updates
     subs.push(
@@ -177,7 +67,6 @@ class App extends Component {
             .then(idToken => {
               const claims = JSON.parse(b64DecodeUnicode(idToken.split(".")[1]))
               this.setState({ claims })
-              this.subscribeToTransactions()
             })
             .catch(error => {
               console.log(error)
@@ -191,10 +80,6 @@ class App extends Component {
 
   componentWillUnmount() {
     this.subs.forEach(cancelSubscription => cancelSubscription())
-    this.unsubscribeFromTransactions()
-
-    this.cancelSourceTransactions = undefined
-    this.cancelTargetTransactions = undefined
   }
 
   addTransaction(transaction) {
@@ -211,6 +96,7 @@ class App extends Component {
       categories,
       claims,
       offices,
+      period,
       sourceTransactions,
       targetTransactions,
       users,
@@ -226,6 +112,12 @@ class App extends Component {
 
     return (
       <div style={{ margin: "0 auto", maxWidth: "60rem", padding: "1em" }}>
+        <Subscriptions
+          admin={claims.admin}
+          office={claims.office}
+          period={period}
+          update={this.update}
+        />
         <NavBar users={users} />
         <Switch>
           <Route
@@ -237,7 +129,9 @@ class App extends Component {
             path="/transactions/:year?/:period?"
             render={() => (
               <React.Fragment>
-                <TransactionsContainer loadTransactions={this.loadTransactions}>
+                <TransactionsContainer
+                  loadTransactions={period => this.setState({ period })}
+                >
                   <Transactions
                     transactions={transactions}
                     office={claims.office}
