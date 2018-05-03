@@ -1,20 +1,14 @@
 import React from "react"
-import { Table } from "semantic-ui-react"
+import { Link } from "react-router-dom"
+import { Button, Icon, Table } from "semantic-ui-react"
 import { DateTime } from "luxon"
-
-import AddTransactionModal from "./AddTransactionModal"
 
 const DATE_SHORT = {
   month: "short",
   day: "numeric",
 }
 
-export default ({
-  addTransaction,
-  categories = [],
-  offices = [],
-  transactions = [],
-}) => (
+export default ({ transactions = [] }) => (
   <Table compact>
     <Table.Header>
       <Table.Row>
@@ -53,11 +47,18 @@ export default ({
       <Table.Row>
         <Table.HeaderCell />
         <Table.HeaderCell colSpan="6">
-          <AddTransactionModal
-            categories={categories}
-            offices={offices}
-            onSubmit={addTransaction}
-          />
+          <Link to="/transactions/add">
+            <Button
+              floated="right"
+              icon
+              labelPosition="left"
+              primary
+              size="small"
+            >
+              <Icon name="plus" />
+              Add Transaction
+            </Button>
+          </Link>
         </Table.HeaderCell>
       </Table.Row>
     </Table.Footer>

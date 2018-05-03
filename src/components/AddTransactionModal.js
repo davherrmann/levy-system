@@ -1,27 +1,19 @@
 /* eslint-env browser */
 import React, { Component } from "react"
+import { withRouter } from "react-router-dom"
 import { Button, Form, Icon, Input, Modal, Select } from "semantic-ui-react"
 
 class AddTransactionModal extends Component {
   constructor(props) {
     super(props)
 
-    this.handleOpen = this.handleOpen.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
-
-    this.state = {
-      modalOpen: false,
-    }
-  }
-
-  handleOpen() {
-    this.setState({ modalOpen: true })
   }
 
   handleClose() {
-    this.setState({ modalOpen: false })
+    this.props.history.push("/transactions")
   }
 
   handleChange(e, { name, value }) {
@@ -41,26 +33,15 @@ class AddTransactionModal extends Component {
   }
 
   render() {
+    let { categories = [], offices = [] } = this.props
+
     return (
       <Modal
         size="tiny"
         closeIcon
         closeOnRootNodeClick={false}
         onClose={this.handleClose}
-        open={this.state.modalOpen}
-        trigger={
-          <Button
-            floated="right"
-            icon
-            labelPosition="left"
-            primary
-            size="small"
-            onClick={this.handleOpen}
-          >
-            <Icon name="plus" />
-            Add Transaction
-          </Button>
-        }
+        open={true}
       >
         <Modal.Header>Add Transaction</Modal.Header>
         <Modal.Content>
@@ -69,7 +50,7 @@ class AddTransactionModal extends Component {
               name="office"
               control={Select}
               label="Office"
-              options={this.props.offices.map(({ name }, key) => ({
+              options={offices.map(({ name }, key) => ({
                 key,
                 value: name,
                 text: name,
@@ -87,7 +68,7 @@ class AddTransactionModal extends Component {
               name="category"
               control={Select}
               label="Category"
-              options={this.props.categories.map(({ name }, key) => ({
+              options={categories.map(({ name }, key) => ({
                 key,
                 value: name,
                 text: name,
@@ -114,4 +95,4 @@ class AddTransactionModal extends Component {
   }
 }
 
-export default AddTransactionModal
+export default withRouter(AddTransactionModal)

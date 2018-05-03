@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import { Redirect, Route, Switch, withRouter } from "react-router-dom"
 import { firebase } from "../firebase"
 
+import AddTransactionModal from "./AddTransactionModal"
 import Login from "./Login"
 import NavBar from "./NavBar"
 import Transactions from "./Transactions"
@@ -118,15 +119,26 @@ class App extends Component {
             render={() => <Users offices={offices} users={users} />}
           />
           <Route
-            exact
             path="/transactions"
             render={() => (
-              <Transactions
-                addTransaction={this.addTransaction}
-                categories={categories}
-                offices={offices}
-                transactions={transactions}
-              />
+              <React.Fragment>
+                <Transactions
+                  addTransaction={this.addTransaction}
+                  categories={categories}
+                  offices={offices}
+                  transactions={transactions}
+                />
+                <Route
+                  path="/transactions/add"
+                  render={() => (
+                    <AddTransactionModal
+                      addTransaction={this.addTransaction}
+                      categories={categories}
+                      offices={offices}
+                    />
+                  )}
+                />
+              </React.Fragment>
             )}
           />
           <Redirect from="/" to="/transactions" />
