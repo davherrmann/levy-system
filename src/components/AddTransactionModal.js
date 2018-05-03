@@ -50,7 +50,7 @@ class AddTransactionModal extends Component {
   }
 
   render() {
-    let { categories = [], offices = [] } = this.props
+    let { categories = [], offices = [], office } = this.props
 
     return (
       <Modal
@@ -67,11 +67,13 @@ class AddTransactionModal extends Component {
               name="office"
               control={Select}
               label="Office"
-              options={offices.map(({ name }, key) => ({
-                key,
-                value: name,
-                text: name,
-              }))}
+              options={offices
+                .filter(({ name }) => name !== office)
+                .map(({ name }, key) => ({
+                  key,
+                  value: name,
+                  text: name,
+                }))}
               onChange={this.handleChange}
             />
             <Form.Field
