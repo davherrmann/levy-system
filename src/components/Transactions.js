@@ -54,6 +54,10 @@ const Transactions = ({
     params: { year = defaultPeriod().year, period = defaultPeriod().period },
   },
 }) => {
+  if (year === "add") {
+    year = defaultPeriod().year
+  }
+
   let current = {
     year: parseInt(year, 10),
     period: parseInt(period, 10),

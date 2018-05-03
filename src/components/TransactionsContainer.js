@@ -32,7 +32,7 @@ export default withRouter(
       },
     }) {
       if (year === "add") {
-        return
+        year = defaultPeriod().year
       }
 
       if (year !== this.year || period !== this.period) {
