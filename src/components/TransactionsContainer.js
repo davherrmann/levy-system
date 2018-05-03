@@ -35,10 +35,10 @@ export default withRouter(
         return
       }
 
-      let lastYear = this.props.match.params.year
-      let lastPeriod = this.props.match.params.period
+      if (year !== this.year || period !== this.period) {
+        this.year = year
+        this.period = period
 
-      if (year !== lastYear || period !== lastPeriod) {
         this.props.loadTransactions({
           year,
           period,

@@ -145,7 +145,6 @@ class App extends Component {
               <React.Fragment>
                 <TransactionsContainer loadTransactions={this.loadTransactions}>
                   <Transactions
-                    addTransaction={this.addTransaction}
                     categories={categories}
                     offices={offices}
                     transactions={transactions}
