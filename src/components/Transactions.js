@@ -122,7 +122,7 @@ const Transactions = ({
           <Table.Row
             key={key}
             style={{
-              backgroundColor: office === t.sourceOffice ? "none" : "#f3fdfa", // red: "#fff7f7"
+              backgroundColor: office === t.targetOffice ? "#f3fdfa" : "none", // red: "#fff7f7"
             }}
           >
             <Table.Cell collapsing>{t.sourceOffice}</Table.Cell>
@@ -137,7 +137,7 @@ const Transactions = ({
               collapsing
               textAlign="right"
               style={{
-                color: office === t.sourceOffice ? "black" : "#42a746", // red: #e42e2e
+                color: office === t.targetOffice ? "#42a746" : "black", // red: #e42e2e
               }}
             >
               {office === t.sourceOffice ? "−" : ""}

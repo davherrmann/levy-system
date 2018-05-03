@@ -34,6 +34,9 @@ class App extends Component {
 
     this.loadTransactions = this.loadTransactions.bind(this)
     this.subscribeToTransactions = this.subscribeToTransactions.bind(this)
+    this.unsubscribeFromTransactions = this.unsubscribeFromTransactions.bind(
+      this
+    )
 
     this.state = {
       authenticated: true,
@@ -56,21 +59,43 @@ class App extends Component {
     this.subscribeToTransactions()
   }
 
-  subscribeToTransactions() {
+  unsubscribeFromTransactions() {
     if (this.cancelSourceTransactions) {
       this.cancelSourceTransactions()
     }
     if (this.cancelTargetTransactions) {
       this.cancelTargetTransactions()
     }
+  }
+
+  subscribeToTransactions() {
+    this.unsubscribeFromTransactions()
     if (!this.period) {
       return
     }
+
+    if (this.state.claims.admin) {
+      this.cancelSourceTransactions = firebase
+        .firestore()
+        .collection("transactions")
+        .where("period", "==", this.period.year + "-" + this.period.period)
+        .orderBy("createdAt")
+        .onSnapshot(
+          querySnapshot => {
+            this.setState({
+              sourceTransactions: querySnapshot.docs.map(doc => doc.data()),
+            })
+          },
+          err => console.log("source transactions:", err)
+        )
+      return
+    }
+
     this.cancelSourceTransactions = firebase
       .firestore()
       .collection("transactions")
       .where("period", "==", this.period.year + "-" + this.period.period)
-      .where("sourceOffice", "==", "UK Office")
+      .where("sourceOffice", "==", this.state.claims.office)
       .orderBy("createdAt")
       .onSnapshot(
         querySnapshot => {
@@ -80,11 +105,12 @@ class App extends Component {
         },
         err => console.log("source transactions:", err)
       )
+
     this.cancelTargetTransactions = firebase
       .firestore()
       .collection("transactions")
       .where("period", "==", this.period.year + "-" + this.period.period)
-      .where("targetOffice", "==", "UK Office")
+      .where("targetOffice", "==", this.state.claims.office)
       .orderBy("createdAt")
       .onSnapshot(
         querySnapshot => {
@@ -111,8 +137,6 @@ class App extends Component {
           err => console.log("users:", err)
         )
     )
-
-    this.subscribeToTransactions()
 
     subs.push(
       firebase
@@ -153,6 +177,7 @@ class App extends Component {
             .then(idToken => {
               const claims = JSON.parse(b64DecodeUnicode(idToken.split(".")[1]))
               this.setState({ claims })
+              this.subscribeToTransactions()
             })
             .catch(error => {
               console.log(error)
@@ -166,8 +191,7 @@ class App extends Component {
 
   componentWillUnmount() {
     this.subs.forEach(cancelSubscription => cancelSubscription())
-    this.cancelSourceTransactions()
-    this.cancelTargetTransactions()
+    this.unsubscribeFromTransactions()
 
     this.cancelSourceTransactions = undefined
     this.cancelTargetTransactions = undefined

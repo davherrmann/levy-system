@@ -30,10 +30,11 @@ exports.createTransaction = functions.firestore
 exports.updateUser = functions.firestore
   .document("users/{userId}")
   .onUpdate((change, context) => {
-    let { office, currency } = change.after.data()
+    let { office, currency, admin: isAdmin } = change.after.data()
     let uid = context.params.userId
 
     return admin.auth().setCustomUserClaims(uid, {
+      admin: isAdmin,
       office,
       currency,
       verified: true,
