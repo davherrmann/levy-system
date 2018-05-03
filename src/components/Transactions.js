@@ -48,6 +48,7 @@ const periodName = ({ year, period }) =>
   }[period])
 
 const Transactions = ({
+  office,
   transactions = [],
   history,
   match: {
@@ -118,7 +119,12 @@ const Transactions = ({
 
       <Table.Body>
         {transactions.map((t, key) => (
-          <Table.Row key={key}>
+          <Table.Row
+            key={key}
+            style={{
+              backgroundColor: office === t.sourceOffice ? "none" : "#f3fdfa", // red: "#fff7f7"
+            }}
+          >
             <Table.Cell collapsing>{t.sourceOffice}</Table.Cell>
             <Table.Cell collapsing>{t.targetOffice}</Table.Cell>
             <Table.Cell collapsing>
@@ -127,7 +133,14 @@ const Transactions = ({
                   DATE_SHORT
                 )}
             </Table.Cell>
-            <Table.Cell collapsing textAlign="right">
+            <Table.Cell
+              collapsing
+              textAlign="right"
+              style={{
+                color: office === t.sourceOffice ? "black" : "#42a746", // red: #e42e2e
+              }}
+            >
+              {office === t.sourceOffice ? "−" : ""}
               {(t.amountInCents / 100).toFixed(2) + " " + t.currency}
             </Table.Cell>
             <Table.Cell collapsing>{t.category}</Table.Cell>

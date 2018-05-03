@@ -215,9 +215,8 @@ class App extends Component {
               <React.Fragment>
                 <TransactionsContainer loadTransactions={this.loadTransactions}>
                   <Transactions
-                    categories={categories}
-                    offices={offices}
                     transactions={transactions}
+                    office={claims.office}
                   />
                 </TransactionsContainer>
                 <Route
