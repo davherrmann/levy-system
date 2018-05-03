@@ -60,7 +60,6 @@ export default class Subscriptions extends Component {
     this.subscriptions = {
       categories: this.subscribeTo(collection("categories"), "categories"),
       offices: this.subscribeTo(collection("offices"), "offices"),
-      users: this.subscribeTo(collection("users"), "users"),
       transactions: this.subscribeToTransactions(),
     }
   }
@@ -75,6 +74,11 @@ export default class Subscriptions extends Component {
 
     if (admin === prevAdmin && period === prevPeriod && office === prevOffice) {
       return
+    }
+
+    if (admin) {
+      this.subscriptions.users && this.subscriptions.users()
+      this.subscriptions.users = this.subscribeTo(collection("users"), "users")
     }
 
     this.subscriptions.transactions()
