@@ -3,6 +3,7 @@ import { Redirect, Route, Switch, withRouter } from "react-router-dom"
 import { firebase } from "../firebase"
 
 import AddTransactionModal from "./AddTransactionModal"
+import AddUserModal from "./AddUserModal"
 import Login from "./Login"
 import NavBar from "./NavBar"
 import Subscriptions from "./Subscriptions"
@@ -90,6 +91,14 @@ class App extends Component {
       .catch(err => console.log(err))
   }
 
+  addUser(user) {
+    firebase
+      .firestore()
+      .collection("users")
+      .add(user)
+      .catch(err => console.log(err))
+  }
+
   render() {
     let {
       authenticated,
@@ -121,9 +130,18 @@ class App extends Component {
         <NavBar users={users} />
         <Switch>
           <Route
-            exact
             path="/users"
-            render={() => <Users offices={offices} users={users} />}
+            render={() => (
+              <React.Fragment>
+                <Users offices={offices} users={users} />
+                <Route
+                  path="/users/add"
+                  render={() => (
+                    <AddUserModal offices={offices} onSubmit={this.addUser} />
+                  )}
+                />
+              </React.Fragment>
+            )}
           />
           <Route
             path="/transactions/:year?/:period?"

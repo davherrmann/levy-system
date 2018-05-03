@@ -1,8 +1,7 @@
 import React from "react"
-import { Checkbox, Table } from "semantic-ui-react"
+import { Link } from "react-router-dom"
+import { Button, Checkbox, Icon, Table } from "semantic-ui-react"
 import { firebase } from "../firebase"
-
-import AddUserModal from "./AddUserModal"
 
 const Users = ({ offices, users }) => (
   <Table compact {...this.props}>
@@ -43,7 +42,18 @@ const Users = ({ offices, users }) => (
       <Table.Row>
         <Table.HeaderCell />
         <Table.HeaderCell colSpan="5">
-          <AddUserModal offices={offices} onSubmit={this.handleAddUser} />
+          <Link to="/users/add">
+            <Button
+              floated="right"
+              icon
+              labelPosition="left"
+              primary
+              size="small"
+            >
+              <Icon name="plus" />
+              Add User
+            </Button>
+          </Link>
         </Table.HeaderCell>
       </Table.Row>
     </Table.Footer>
