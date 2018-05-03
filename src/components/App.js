@@ -9,6 +9,13 @@ import Transactions from "./Transactions"
 import TransactionsContainer from "./TransactionsContainer"
 import Users from "./Users"
 
+const combineTransactions = (sourceTransactions, targetTransactions) =>
+  []
+    .concat(sourceTransactions, targetTransactions)
+    .sort(({ createdAt: a }, { createdAt: b }) => {
+      return a.seconds - b.seconds
+    })
+
 class App extends Component {
   constructor() {
     super()
@@ -20,7 +27,8 @@ class App extends Component {
       authenticated: true,
       categories: [],
       offices: [],
-      transactions: [],
+      sourceTransactions: [],
+      targetTransactions: [],
       users: [],
     }
   }
@@ -28,7 +36,7 @@ class App extends Component {
   loadTransactions({ year, period }) {
     this.period = { year, period }
 
-    if (!this.transactionsSub) {
+    if (!this.cancelSourceTransactions || !this.cancelTargetTransactions) {
       return
     }
 
@@ -36,21 +44,39 @@ class App extends Component {
   }
 
   subscribeToTransactions() {
-    if (this.transactionsSub) {
-      this.transactionsSub()
+    if (this.cancelSourceTransactions) {
+      this.cancelSourceTransactions()
     }
-    this.transactionsSub = firebase
+    if (this.cancelTargetTransactions) {
+      this.cancelTargetTransactions()
+    }
+    this.cancelSourceTransactions = firebase
       .firestore()
       .collection("transactions")
       .where("period", "==", this.period.year + "-" + this.period.period)
+      .where("sourceOffice", "==", "UK Office")
       .orderBy("createdAt")
       .onSnapshot(
         querySnapshot => {
           this.setState({
-            transactions: querySnapshot.docs.map(doc => doc.data()),
+            sourceTransactions: querySnapshot.docs.map(doc => doc.data()),
           })
         },
-        err => console.log("transactions:", err)
+        err => console.log("source transactions:", err)
+      )
+    this.cancelTargetTransactions = firebase
+      .firestore()
+      .collection("transactions")
+      .where("period", "==", this.period.year + "-" + this.period.period)
+      .where("targetOffice", "==", "UK Office")
+      .orderBy("createdAt")
+      .onSnapshot(
+        querySnapshot => {
+          this.setState({
+            targetTransactions: querySnapshot.docs.map(doc => doc.data()),
+          })
+        },
+        err => console.log("target transactions:", err)
       )
   }
 
@@ -112,7 +138,8 @@ class App extends Component {
 
   componentWillUnmount() {
     this.subs.forEach(cancelSubscription => cancelSubscription())
-    this.transactionsSub()
+    this.cancelSourceTransactions()
+    this.cancelTargetTransactions()
   }
 
   addTransaction(transaction) {
@@ -125,7 +152,18 @@ class App extends Component {
   }
 
   render() {
-    let { authenticated, categories, offices, transactions, users } = this.state
+    let {
+      authenticated,
+      categories,
+      offices,
+      sourceTransactions,
+      targetTransactions,
+      users,
+    } = this.state
+    let transactions = combineTransactions(
+      sourceTransactions,
+      targetTransactions
+    )
 
     if (!authenticated) {
       return <Login authenticated={authenticated} />
