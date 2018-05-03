@@ -21,7 +21,7 @@ const Users = ({ offices, users }) => (
         <Table.Row key={key}>
           <Table.Cell disabled={u.disabled}>{u.email}</Table.Cell>
           <Table.Cell disabled={u.disabled}>{u.name}</Table.Cell>
-          <Table.Cell disabled={u.disabled}>{u.officeid}</Table.Cell>
+          <Table.Cell disabled={u.disabled}>{u.office}</Table.Cell>
           <Table.Cell collapsing disabled={u.disabled}>
             {u.admin ? "Yes" : "No"}
           </Table.Cell>
