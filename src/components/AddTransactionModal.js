@@ -12,6 +12,10 @@ class AddTransactionModal extends Component {
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
+  componentWillReceiveProps() {
+    console.log(this.props.location)
+  }
+
   handleClose() {
     this.props.history.push("/transactions")
   }

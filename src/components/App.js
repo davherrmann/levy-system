@@ -6,11 +6,15 @@ import AddTransactionModal from "./AddTransactionModal"
 import Login from "./Login"
 import NavBar from "./NavBar"
 import Transactions from "./Transactions"
+import TransactionsContainer from "./TransactionsContainer"
 import Users from "./Users"
 
 class App extends Component {
   constructor() {
     super()
+
+    this.loadTransactions = this.loadTransactions.bind(this)
+    this.subscribeToTransactions = this.subscribeToTransactions.bind(this)
 
     this.state = {
       authenticated: true,
@@ -19,6 +23,34 @@ class App extends Component {
       transactions: [],
       users: [],
     }
+  }
+
+  loadTransactions({ year, period }) {
+    this.period = { year, period }
+
+    if (!this.transactionsSub) {
+      return
+    }
+
+    this.subscribeToTransactions()
+  }
+
+  subscribeToTransactions() {
+    if (this.transactionsSub) {
+      this.transactionsSub()
+    }
+    this.transactionsSub = firebase
+      .firestore()
+      .collection("transactions")
+      .where("period", "==", this.period.year + "-" + this.period.period)
+      .onSnapshot(
+        querySnapshot => {
+          this.setState({
+            transactions: querySnapshot.docs.map(doc => doc.data()),
+          })
+        },
+        err => console.log("transactions:", err)
+      )
   }
 
   componentDidMount() {
@@ -37,19 +69,7 @@ class App extends Component {
         )
     )
 
-    subs.push(
-      firebase
-        .firestore()
-        .collection("transactions")
-        .onSnapshot(
-          querySnapshot => {
-            this.setState({
-              transactions: querySnapshot.docs.map(doc => doc.data()),
-            })
-          },
-          err => console.log("transactions:", err)
-        )
-    )
+    this.subscribeToTransactions()
 
     subs.push(
       firebase
@@ -91,6 +111,7 @@ class App extends Component {
 
   componentWillUnmount() {
     this.subs.forEach(cancelSubscription => cancelSubscription())
+    this.transactionsSub()
   }
 
   addTransaction(transaction) {
@@ -119,15 +140,17 @@ class App extends Component {
             render={() => <Users offices={offices} users={users} />}
           />
           <Route
-            path="/transactions"
+            path="/transactions/:year?/:period?"
             render={() => (
               <React.Fragment>
-                <Transactions
-                  addTransaction={this.addTransaction}
-                  categories={categories}
-                  offices={offices}
-                  transactions={transactions}
-                />
+                <TransactionsContainer loadTransactions={this.loadTransactions}>
+                  <Transactions
+                    addTransaction={this.addTransaction}
+                    categories={categories}
+                    offices={offices}
+                    transactions={transactions}
+                  />
+                </TransactionsContainer>
                 <Route
                   path="/transactions/add"
                   render={() => (
