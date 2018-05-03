@@ -35,23 +35,24 @@ export default class Subscriptions extends Component {
       )
     }
 
-    return () =>
-      [
-        this.subscribeTo(
-          collection("transactions")
-            .where("period", "==", year + "-" + period)
-            .where("sourceOffice", "==", office)
-            .orderBy("createdAt"),
-          "sourceTransactions"
-        ),
-        this.subscribeTo(
-          collection("transactions")
-            .where("period", "==", year + "-" + period)
-            .where("targetOffice", "==", office)
-            .orderBy("createdAt"),
-          "targetTransactions"
-        ),
-      ].forEach(cancel => cancel())
+    let transactions = [
+      this.subscribeTo(
+        collection("transactions")
+          .where("period", "==", year + "-" + period)
+          .where("sourceOffice", "==", office)
+          .orderBy("createdAt"),
+        "sourceTransactions"
+      ),
+      this.subscribeTo(
+        collection("transactions")
+          .where("period", "==", year + "-" + period)
+          .where("targetOffice", "==", office)
+          .orderBy("createdAt"),
+        "targetTransactions"
+      ),
+    ]
+
+    return () => transactions.forEach(cancel => cancel())
   }
 
   componentDidMount() {
@@ -64,11 +65,15 @@ export default class Subscriptions extends Component {
     }
   }
 
-  componentDidUpdate({ admin: prevAdmin, period: prevPeriod }) {
+  componentDidUpdate({
+    admin: prevAdmin,
+    office: prevOffice,
+    period: prevPeriod,
+  }) {
     // change subscriptions
-    let { admin, period } = this.props
+    let { admin, office, period } = this.props
 
-    if (admin === prevAdmin && period === prevPeriod) {
+    if (admin === prevAdmin && period === prevPeriod && office === prevOffice) {
       return
     }
 
