@@ -44,7 +44,7 @@ exports.updateUser = functions.firestore
 exports.createUser = functions.firestore
   .document("users/{userId}")
   .onCreate((snap, context) => {
-    let { email, name } = snap.data()
+    let { office, currency, admin: isAdmin, email, name } = snap.data()
     let uid = context.params.userId
 
     return admin
@@ -58,6 +58,9 @@ exports.createUser = functions.firestore
       .then(user => {
         // set custom user claims
         admin.auth().setCustomUserClaims(uid, {
+          admin: isAdmin,
+          office,
+          currency,
           verified: true,
         })
         // send password reset email
